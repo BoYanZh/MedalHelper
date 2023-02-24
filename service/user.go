@@ -217,7 +217,7 @@ func (user *User) RunOnce() bool {
 func (user *User) Start(wg *sync.WaitGroup) {
 	if user.isLogin {
 		backOff := retry.NewConstant(5 * time.Second)
-		backOff = retry.WithMaxRetries(3, backOff)
+		backOff = retry.WithMaxRetries(10, backOff)
 		_ = retry.Do(context.Background(), backOff, func(ctx context.Context) error {
 			if ok := user.RunOnce(); !ok {
 				return retry.RetryableError(errors.New("task not complete"))
