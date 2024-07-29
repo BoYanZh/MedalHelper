@@ -133,7 +133,7 @@ func (user *User) setMedals() {
 		}
 		if medal.Medal.Level <= 20 {
 			user.medalsLow = append(user.medalsLow, medal)
-			if medal.Medal.TodayFeed < 1500 {
+			if medal.Medal.TodayFeed < 200 {
 				user.remainMedals = append(user.remainMedals, medal)
 			}
 		}
@@ -145,14 +145,14 @@ func (user *User) checkMedals() bool {
 	fullMedalList := make([]string, 0, len(user.medalsLow))
 	failMedalList := make([]string, 0)
 	for _, medal := range user.medalsLow {
-		if medal.Medal.TodayFeed == 1500 {
+		if medal.Medal.TodayFeed == 200 {
 			fullMedalList = append(fullMedalList, medal.AnchorInfo.NickName)
 		} else {
 			failMedalList = append(failMedalList, medal.AnchorInfo.NickName)
 		}
 	}
 	user.message = fmt.Sprintf(
-		"20级以下牌子共 %d 个\n【1500】%d个\n【1500以下】 %v等 %d个\n",
+		"20级以下牌子共 %d 个\n【200】%d个\n【200以下】 %v等 %d个\n",
 		len(user.medalsLow), len(fullMedalList),
 		failMedalList, len(failMedalList),
 	)
