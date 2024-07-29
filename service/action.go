@@ -17,7 +17,7 @@ func (Like) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Like == 0 {
 		return true
 	}
-	times := 1
+	times := 100
 	ticker := time.NewTicker(time.Duration(util.GlobalConfig.CD.Like) * time.Second)
 	for i := 0; i < times; i++ {
 		if ok := manager.LikeInteract(user.accessKey, medal.RoomInfo.RoomID); !ok {
@@ -49,7 +49,7 @@ func (ALike) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Like == 0 {
 		return true
 	}
-	times := 1
+	times := 100
 	for i := 0; i < times; i++ {
 		if ok := manager.LikeInteract(user.accessKey, medal.RoomInfo.RoomID); !ok {
 			return false
@@ -143,13 +143,16 @@ func (Danmaku) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Danmu == 0 {
 		return true
 	}
-	if ok := manager.WearMedal(user.accessKey, medal.Medal.MedalID); !ok {
-		return false
+	times := 5
+	for i := 0; i < times; i++ {
+		if ok := manager.WearMedal(user.accessKey, medal.Medal.MedalID); !ok {
+			return false
+		}
+		if ok := manager.SendDanmaku(user.accessKey, medal.RoomInfo.RoomID); !ok {
+			return false
+		}
+		time.Sleep(time.Duration(util.GlobalConfig.CD.Danmu) * time.Second)
 	}
-	if ok := manager.SendDanmaku(user.accessKey, medal.RoomInfo.RoomID); !ok {
-		return false
-	}
-	time.Sleep(time.Duration(util.GlobalConfig.CD.Danmu) * time.Second)
 	user.info("%s 房间弹幕打卡完成", medal.AnchorInfo.NickName)
 	return true
 }
