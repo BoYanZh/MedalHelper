@@ -178,11 +178,11 @@ func (Danmaku) Finish(user User, medal []dto.MedalInfo) {
 
 // WatchLive implement IExec, default async, include sending heartbeat
 type WatchLive struct {
-	AsyncAction
+	SyncAction
 }
 
 func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
-	times := 10
+	times := 25
 	for i := 0; i < times; i++ {
 		if ok := manager.Heartbeat(
 			user.accessKey,
@@ -200,8 +200,8 @@ func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
 
 func (WatchLive) Finish(user User, medal []dto.MedalInfo) {
 	if len(medal) == 0 {
-		user.info("每日30分钟完成")
+		user.info("每日25分钟完成")
 	} else {
-		user.info("每日30分钟未完成,剩余(%d/%d)", len(medal), len(user.medalsLow))
+		user.info("每日25分钟未完成,剩余(%d/%d)", len(medal), len(user.medalsLow))
 	}
 }

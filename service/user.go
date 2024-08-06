@@ -145,7 +145,7 @@ func (user *User) checkMedals() bool {
 	fullMedalList := make([]string, 0, len(user.medalsLow))
 	failMedalList := make([]string, 0)
 	for _, medal := range user.medalsLow {
-		if medal.Medal.TodayFeed == 200 {
+		if medal.Medal.TodayFeed >= 200 {
 			fullMedalList = append(fullMedalList, medal.AnchorInfo.NickName)
 		} else {
 			failMedalList = append(failMedalList, medal.AnchorInfo.NickName)
