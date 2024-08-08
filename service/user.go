@@ -140,8 +140,8 @@ func (user *User) setMedals() {
 		}
 	}
 	sort.Slice(user.remainMedals, func(i, j int) bool {
-		return user.remainMedals[i].Medal.TargetID <
-			user.remainMedals[j].Medal.TargetID
+		return user.remainMedals[i].Medal.MedalID <
+			user.remainMedals[j].Medal.MedalID
 	})
 }
 
@@ -190,7 +190,7 @@ func (user *User) expire() {
 func (user *User) Init() bool {
 	if user.loginVerify() {
 		user.signIn()
-		user.setMedals()
+		user.checkMedals()
 		return true
 	} else {
 		util.Error("用户登录失败, accessKey: %s", user.accessKey)

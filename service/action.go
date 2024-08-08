@@ -17,12 +17,13 @@ func (Like) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Like == 0 {
 		return true
 	}
-	times := 100
+	times := 3
 	ticker := time.NewTicker(time.Duration(util.GlobalConfig.CD.Like) * time.Second)
 	for i := 0; i < times; i++ {
 		if ok := manager.LikeInteract(user.accessKey, medal.RoomInfo.RoomID); !ok {
 			return false
 		}
+		user.info("%s 房间点赞已发送(%d/%d)", medal.AnchorInfo.NickName, i+1, times)
 		<-ticker.C
 	}
 	return true
@@ -49,11 +50,12 @@ func (ALike) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Like == 0 {
 		return true
 	}
-	times := 100
+	times := 3
 	for i := 0; i < times; i++ {
 		if ok := manager.LikeInteract(user.accessKey, medal.RoomInfo.RoomID); !ok {
 			return false
 		}
+		user.info("%s 房间点赞已发送(%d/%d)", medal.AnchorInfo.NickName, i+1, times)
 	}
 	return true
 }
@@ -143,7 +145,7 @@ func (Danmaku) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Danmu == 0 {
 		return true
 	}
-	times := 5
+	times := 1
 	for i := 0; i < times; i++ {
 		if ok := manager.WearMedal(user.accessKey, medal.Medal.MedalID); !ok {
 			return false
@@ -151,6 +153,7 @@ func (Danmaku) Do(user User, medal dto.MedalInfo) bool {
 		if ok := manager.SendDanmaku(user.accessKey, medal.RoomInfo.RoomID); !ok {
 			return false
 		}
+		user.info("%s 房间弹幕已发送(%d/%d)", medal.AnchorInfo.NickName, i+1, times)
 		time.Sleep(time.Duration(util.GlobalConfig.CD.Danmu) * time.Second)
 	}
 	user.info("%s 房间弹幕打卡完成", medal.AnchorInfo.NickName)
@@ -182,7 +185,11 @@ type WatchLive struct {
 }
 
 func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
-	times := 25
+	remainFeed := 1500 - medal.Medal.TodayFeed
+	times := (remainFeed/300+1)*5 + 1
+	if remainFeed%300 == 0 {
+		times -= 5
+	}
 	for i := 0; i < times; i++ {
 		if ok := manager.Heartbeat(
 			user.accessKey,
@@ -193,6 +200,15 @@ func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
 			return false
 		}
 		user.info("%s 房间心跳包已发送(%d/%d)", medal.AnchorInfo.NickName, i+1, times)
+		medals, _ := manager.GetMedal(user.accessKey)
+		for _, m := range medals {
+			if m.AnchorInfo.NickName != medal.AnchorInfo.NickName {
+				continue
+			}
+			if m.Medal.TodayFeed >= 1500 {
+				return true
+			}
+		}
 		time.Sleep(1 * time.Minute)
 	}
 	return true
@@ -200,8 +216,8 @@ func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
 
 func (WatchLive) Finish(user User, medal []dto.MedalInfo) {
 	if len(medal) == 0 {
-		user.info("每日25分钟完成")
+		user.info("每日26分钟完成")
 	} else {
-		user.info("每日25分钟未完成,剩余(%d/%d)", len(medal), len(user.medalsLow))
+		user.info("每日26分钟未完成,剩余(%d/%d)", len(medal), len(user.medalsLow))
 	}
 }
