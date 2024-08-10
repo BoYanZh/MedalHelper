@@ -205,7 +205,7 @@ func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
 			if m.AnchorInfo.NickName != medal.AnchorInfo.NickName {
 				continue
 			}
-			user.info("%s 房间今日亲密度 %d", m.Medal.TodayFeed)
+			user.info("%s 房间今日亲密度 %d", medal.AnchorInfo.NickName, m.Medal.TodayFeed)
 			if m.Medal.TodayFeed >= 1500 {
 				return true
 			}
