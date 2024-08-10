@@ -17,7 +17,8 @@ type SyncAction struct{}
 
 func (a *SyncAction) Exec(user User, job *sync.WaitGroup, child IExec) []dto.MedalInfo {
 	fail := make([]dto.MedalInfo, 0, len(user.medalsLow))
-	for _, medal := range user.remainMedals {
+	for i, medal := range user.remainMedals {
+		user.info("运行中：%d/%d", i+1, len(user.remainMedals))
 		retryTime := util.GlobalConfig.CD.Retry
 		if retryTime == 0 {
 			if ok := child.Do(user, medal); !ok {
@@ -49,7 +50,8 @@ func (a *AsyncAction) Exec(user User, job *sync.WaitGroup, child IExec) []dto.Me
 	mu := sync.Mutex{}
 	wg := sync.WaitGroup{}
 	fail := make([]dto.MedalInfo, 0, len(user.medalsLow))
-	for _, medal := range user.remainMedals {
+	for i, medal := range user.remainMedals {
+		user.info("运行中：%d/%d", i+1, len(user.remainMedals))
 		wg.Add(1)
 		retryTime := util.GlobalConfig.CD.Retry
 		if retryTime == 0 {
