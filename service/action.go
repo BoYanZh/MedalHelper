@@ -205,6 +205,7 @@ func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
 			if m.AnchorInfo.NickName != medal.AnchorInfo.NickName {
 				continue
 			}
+			user.info("%s 房间今日亲密度 %d", m.Medal.TodayFeed)
 			if m.Medal.TodayFeed >= 1500 {
 				return true
 			}
@@ -216,8 +217,8 @@ func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
 
 func (WatchLive) Finish(user User, medal []dto.MedalInfo) {
 	if len(medal) == 0 {
-		user.info("每日26分钟完成")
+		user.info("每日25分钟完成")
 	} else {
-		user.info("每日26分钟未完成,剩余(%d/%d)", len(medal), len(user.medalsLow))
+		user.info("每日25分钟未完成,剩余(%d/%d)", len(medal), len(user.medalsLow))
 	}
 }
