@@ -186,7 +186,7 @@ type WatchLive struct {
 
 func (WatchLive) Do(user User, medal dto.MedalInfo) bool {
 	remainFeed := 1500 - medal.Medal.TodayFeed
-	times := (remainFeed/300+1)*5 + 1
+	times := (remainFeed/300+1)*5 + 3
 	if remainFeed%300 == 0 {
 		times -= 5
 	}
