@@ -16,9 +16,11 @@ import (
 	"github.com/robfig/cron"
 )
 
-var login = flag.Bool("login", false, "登录以获取 accesskey（先执行这个）")
-var configPath = flag.String("config", "./users.yaml", "指定配置文件路径")
-var startNow = flag.Bool("start", false, "无视定时任务立刻运行一次")
+var (
+	login      = flag.Bool("login", false, "登录以获取 accesskey（先执行这个）")
+	configPath = flag.String("config", "./users.yaml", "指定配置文件路径")
+	startNow   = flag.Bool("start", false, "无视定时任务立刻运行一次")
+)
 
 func logo() {
 	fmt.Print(`
@@ -85,6 +87,7 @@ func exec() {
 	users := initUsers()
 	wg := sync.WaitGroup{}
 	for _, user := range users {
+		util.Info(" 开始执行 %s", user.Name)
 		wg.Add(1)
 		go func(user service.User, wg *sync.WaitGroup) {
 			if status := user.Init(); status {

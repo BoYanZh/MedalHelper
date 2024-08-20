@@ -200,6 +200,7 @@ func (user *User) Init() bool {
 }
 
 func (user *User) RunOnce() bool {
+	util.Info(" 运行一次启动")
 	switch util.GlobalConfig.CD.Async {
 	case 0: // Sync
 		task := NewTask(*user, []IAction{
@@ -216,6 +217,7 @@ func (user *User) RunOnce() bool {
 		})
 		task.Start()
 	}
+	util.Info(" 运行一次结束")
 	return user.checkMedals()
 }
 
