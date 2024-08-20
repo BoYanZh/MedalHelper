@@ -86,8 +86,8 @@ func initUsers() []service.User {
 func exec() {
 	users := initUsers()
 	wg := sync.WaitGroup{}
+	util.Info(" 总用户数量 %d", len(users))
 	for _, user := range users {
-		util.Info(" 开始执行 %s", user.Name)
 		wg.Add(1)
 		go func(user service.User, wg *sync.WaitGroup) {
 			if status := user.Init(); status {
