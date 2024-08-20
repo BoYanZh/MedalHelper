@@ -99,6 +99,12 @@ func exec() {
 	util.Info(" 今日任务已完成")
 }
 
+func cronExec() {
+	util.Info(" 定时任务已启动")
+	exec()
+	util.Info(" 定时任务已结束")
+}
+
 func main() {
 	flag.Parse()
 
@@ -124,7 +130,7 @@ func main() {
 		exec()
 	} else {
 		c := cron.New()
-		err := c.AddFunc(util.GlobalConfig.Cron, exec)
+		err := c.AddFunc(util.GlobalConfig.Cron, cronExec)
 		if err != nil {
 			panic(err)
 		}
