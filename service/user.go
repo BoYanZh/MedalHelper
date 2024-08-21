@@ -188,19 +188,22 @@ func (user *User) expire() {
 }
 
 func (user *User) Init() bool {
+	user.info("正在登录")
 	if user.loginVerify() {
 		user.signIn()
 		user.checkMedals()
+		user.info("登录成功")
 		return true
 	} else {
 		util.Error("用户登录失败, accessKey: %s", user.accessKey)
 		user.expire()
+		user.info("登录失败")
 		return false
 	}
 }
 
 func (user *User) RunOnce() bool {
-	util.Info(" 运行一次启动")
+	util.Info(" 运行一次开始")
 	switch util.GlobalConfig.CD.Async {
 	case 0: // Sync
 		task := NewTask(*user, []IAction{
