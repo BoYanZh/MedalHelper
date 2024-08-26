@@ -203,7 +203,9 @@ func (user *User) Init() bool {
 }
 
 func (user *User) RunOnce() bool {
-	util.Info(" 运行一次开始")
+	user.info("运行一次开始")
+	user.setMedals()
+	user.info("运行一次剩余直播间：%v", user.remainMedals)
 	switch util.GlobalConfig.CD.Async {
 	case 0: // Sync
 		task := NewTask(*user, []IAction{
@@ -220,11 +222,12 @@ func (user *User) RunOnce() bool {
 		})
 		task.Start()
 	}
-	util.Info(" 运行一次结束")
+	user.info("运行一次结束")
 	return user.checkMedals()
 }
 
 func (user *User) Start(wg *sync.WaitGroup) {
+	user.info("用户运行开始")
 	if user.isLogin {
 		backOff := retry.NewConstant(5 * time.Second)
 		backOff = retry.WithMaxRetries(10, backOff)
@@ -239,4 +242,5 @@ func (user *User) Start(wg *sync.WaitGroup) {
 		util.Error("用户未登录, accessKey: %s", user.accessKey)
 	}
 	wg.Done()
+	user.info("用户运行结束")
 }
