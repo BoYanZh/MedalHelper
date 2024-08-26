@@ -205,7 +205,11 @@ func (user *User) Init() bool {
 func (user *User) RunOnce() bool {
 	user.info("运行一次开始")
 	user.setMedals()
-	user.info("运行一次剩余直播间：%v", user.remainMedals)
+	remainMedals := make([]string, 0)
+	for _, medal := range user.remainMedals {
+		remainMedals = append(remainMedals, medal.AnchorInfo.NickName)
+	}
+	user.info("运行一次剩余直播间：%v", remainMedals)
 	switch util.GlobalConfig.CD.Async {
 	case 0: // Sync
 		task := NewTask(*user, []IAction{
