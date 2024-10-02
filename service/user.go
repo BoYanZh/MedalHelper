@@ -117,7 +117,7 @@ func (user *User) setMedals() {
 		for _, medal := range medals {
 			if util.IntContain(user.allowedUIDs, medal.Medal.TargetID) != -1 {
 				user.medalsLow = append(user.medalsLow, medal)
-				if medal.Medal.TodayFeed < 1300 {
+				if medal.Medal.TodayFeed < 1500 {
 					user.remainMedals = append(user.remainMedals, medal)
 				}
 			}
