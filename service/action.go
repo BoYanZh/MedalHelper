@@ -17,7 +17,7 @@ func (Like) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Like == 0 {
 		return true
 	}
-	times := 3
+	times := 60
 	ticker := time.NewTicker(time.Duration(util.GlobalConfig.CD.Like) * time.Second)
 	for i := 0; i < times; i++ {
 		if ok := manager.LikeInteract(user.accessKey, medal.RoomInfo.RoomID); !ok {
@@ -50,7 +50,7 @@ func (ALike) Do(user User, medal dto.MedalInfo) bool {
 	if util.GlobalConfig.CD.Like == 0 {
 		return true
 	}
-	times := 3
+	times := 60
 	for i := 0; i < times; i++ {
 		if ok := manager.LikeInteract(user.accessKey, medal.RoomInfo.RoomID); !ok {
 			return false
